@@ -1,0 +1,53 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+env/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+MEU_TOKEN.txt
+
+# --- Flask / Variáveis de Ambiente ---
+.env
+.flaskenv
+instance/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Bancos de Dados (Agro/Campo) ---
+# Se estiver usando SQLite local para testes, não envie o arquivo .db
+*.db
+*.sqlite3
+
+# --- Logs de Operação ---
+*.log
+logs/
+
+# --- Sistema e IDEs ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# --- PWA / Front-end ---
+node_modules/
+.npm

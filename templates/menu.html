@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroGestão - Menu</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="menu-body">
+
+<div class="menu-container">
+    <header class="menu-header">
+        <img src="/static/logo.png" alt="Logo" class="menu-logo">
+        <h1>Painel de Controle</h1>
+        <p>Olá, <strong>Admin</strong>. O que deseja fazer?</p>
+    </header>
+
+    <div class="menu-grid">
+        <a href="/coleta" class="menu-card">
+            <div class="icon-box"><i class="fas fa-edit"></i></div>
+            <h3>Coleta de Dados</h3>
+            <p>Registrar atividades de campo</p>
+        </a>
+
+        <a href="/ver_dados" class="menu-card">
+            <div class="icon-box"><i class="fas fa-table"></i></div>
+            <h3>Visualizar Banco</h3>
+            <p>Consultar registros salvos</p>
+        </a>
+
+        <a href="/relatorios" class="menu-card">
+            <div class="icon-box"><i class="fas fa-file-invoice"></i></div>
+            <h3>Relatórios</h3>
+            <p>Emissão e exportação (Excel/PDF)</p>
+        </a>
+
+        <div class="menu-card disabled">
+            <div class="icon-box"><i class="fas fa-cog"></i></div>
+            <h3>Configurações</h3>
+            <p>Ajustes do sistema</p>
+        </div>
+    </div>
+
+    <footer class="menu-footer">
+        <a href="/" class="btn-exit"><i class="fas fa-sign-out-alt"></i> Sair do Sistema</a>
+    </footer>
+</div>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+    }
+</script>
+</body>
+</html>

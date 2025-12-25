@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroGestão - Coleta de Campo</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="coleta-body">
+
+<div class="card agro-card">
+    <header class="coleta-header">
+        <div class="header-top">
+            <h2><i class="fas fa-tractor"></i> Registro de Campo</h2>
+            <span class="badge" id="status-conexao"><i class="fas fa-circle"></i> Online</span>
+        </div>
+        <p>Preencha os dados da atividade abaixo</p>
+    </header>
+
+    <form id="formRegistro" class="agro-form">
+        <div class="field">
+            <label><i class="fas fa-map-marker-alt"></i> Talhão / Lote:</label>
+            <select id="talhao">
+                <option value="T1">Talhão 01 - Soja</option>
+                <option value="T2">Talhão 02 - Milho</option>
+                <option value="P1">Pasto Norte - Nelore</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label><i class="fas fa-tasks"></i> Tipo de Atividade:</label>
+            <select id="atividade">
+                <option value="aplicacao">Aplicação de Insumo</option>
+                <option value="sanidade">Manejo Sanitário</option>
+                <option value="observacao">Observação de Pragas</option>
+            </select>
+        </div>
+
+        <div class="input-row">
+            <div class="field">
+                <label><i class="fas fa-weight-hanging"></i> Quantidade:</label>
+                <input type="number" id="quantidade" placeholder="Ex: 50.5" step="0.01">
+            </div>
+            <div class="field">
+                <label><i class="fas fa-calendar-alt"></i> Data/Hora:</label>
+                <input type="datetime-local" id="dataHora">
+            </div>
+        </div>
+
+        <div class="field">
+            <label><i class="fas fa-comment-alt"></i> Observações:</label>
+            <textarea id="observacoes" placeholder="Notas sobre clima, estado da cultura..."></textarea>
+        </div>
+
+        <button type="button" class="btn-save" onclick="salvarEntrada()">
+            <i class="fas fa-save"></i> SALVAR NO DISPOSITIVO
+        </button>
+    </form>
+    
+    <div class="sync-section">
+        <div class="contador-box">
+            <i class="fas fa-cloud-upload-alt"></i> 
+            <span>Pendentes: <strong id="cont-num">0</strong></span>
+        </div>
+        <button class="btn-sync" onclick="sincronizarDados()">
+            <i class="fas fa-sync-alt"></i> Sincronizar
+        </button>
+    </div>
+    
+    <div id="status" class="status-msg"></div>
+
+    <div class="nav-footer">
+        <a href="/ver_dados" class="btn-link">Visualizar Banco</a>
+        <a href="/" class="btn-logout">Sair</a>
+    </div>
+</div>
+
+<script src="/static/js/db.js"></script>
+<script src="/static/js/app.js"></script>
+<script>
+    // Define a data atual por padrão no campo
+    document.getElementById('dataHora').value = new Date().toISOString().slice(0, 16);
+
+    // Registro do Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+    }
+</script>
+
+</body>
+</html>

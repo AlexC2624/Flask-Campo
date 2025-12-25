@@ -1,7 +1,0 @@
-__pycache__/
-venv/
-MEU_TOKEN.txt
-.vscode/
-*.log
-*.sqlite3
-*.db

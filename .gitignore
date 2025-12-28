@@ -22,7 +22,7 @@ wheels/
 .installed.cfg
 *.egg
 
-MEU_TOKEN.txt
+ngrok_token.txt
 
 # --- Flask / Variáveis de Ambiente ---
 .env

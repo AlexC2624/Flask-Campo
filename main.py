@@ -15,7 +15,7 @@ if __name__ == '__main__':
     # Instancia a classe do tunel
     if USAR_TUNEL_NGROK:
         from tunnel import NgrokTunnel
-        tunel = NgrokTunnel(porta=PORTA, auth_token="37Ug3z1cWqanP16Oj362feeH7Ng_38yzvo4ZeXWbj6kGaHAnX")  # Coloque seu auth_token se tiver
+        tunel = NgrokTunnel(porta=PORTA, auth_token=open('ngrok_token.txt').read().strip())
         tunel.iniciar()
 
     elif USAR_TUNEL_CLOUDFLARE:

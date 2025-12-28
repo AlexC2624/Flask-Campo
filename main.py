@@ -1,30 +1,35 @@
 import sys
 from flask import Flask
-from tunnel import iniciar_ngrok, finalizar_ngrok
 from routes import configurar_rotas
 from manage import Manage
 
-# Inicialização
 app = Flask(__name__)
 db = Manage()
-
-# Aplicar as rotas ao app
 configurar_rotas(app, db)
 
 if __name__ == '__main__':
     PORTA = 5000
-    TUNEL_ATIVO = True  # Defina como True para ativar o túnel Ngrok
-    
-    # Tenta iniciar o túnel Ngrok se ativado
-    if TUNEL_ATIVO:
-        url_publica = iniciar_ngrok(PORTA)
+    USAR_TUNEL_NGROK = True
+    USAR_TUNEL_CLOUDFLARE = False
+
+    # Instancia a classe do tunel
+    if USAR_TUNEL_NGROK:
+        from tunnel import NgrokTunnel
+        tunel = NgrokTunnel(porta=PORTA, auth_token="37Ug3z1cWqanP16Oj362feeH7Ng_38yzvo4ZeXWbj6kGaHAnX")  # Coloque seu auth_token se tiver
+        tunel.iniciar()
+
+    elif USAR_TUNEL_CLOUDFLARE:
+        from tunnel import CloudflareTunnel
+        tunel = CloudflareTunnel(porta=PORTA)
+        tunel.iniciar()
     
     try:
-        # Executa o servidor Flask
-        # host='0.0.0.0' é fundamental para acesso na rede local
         app.run(host='0.0.0.0', port=PORTA, debug=False)
     except KeyboardInterrupt:
         print("\nSaindo do programa...")
     finally:
-        if TUNEL_ATIVO: finalizar_ngrok()
-        sys.exit(0)
+        if USAR_TUNEL_NGROK:
+            tunel.finalizar()
+        elif USAR_TUNEL_CLOUDFLARE:
+            tunel.finalizar()
+            sys.exit(0)

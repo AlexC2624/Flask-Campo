@@ -1,13 +1,10 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory, redirect, url_for, make_response, send_file
+from flask import render_template, request, jsonify, send_from_directory, make_response, send_file
 import pandas as pd
 from io import BytesIO
 
 def configurar_rotas(app, db):
-    # Removido: app.secret_key e verificações de session
-
     @app.route('/')
     def index():
-        # Vai direto para o menu ao abrir o app
         return render_template('menu.html')
 
     @app.route('/menu')

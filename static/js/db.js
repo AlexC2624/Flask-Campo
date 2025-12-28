@@ -1,5 +1,15 @@
 let db_instancia = null;
 
+function obterIdAparelho() {
+    let id = localStorage.getItem('agro_device_id');
+    if (!id) {
+        // Gera um ID tipo: AGRO-A1B2C-9999
+        id = 'CEL-' + Math.random().toString(36).substr(2, 5).toUpperCase() + '-' + Date.now().toString().slice(-4);
+        localStorage.setItem('agro_device_id', id);
+    }
+    return id;
+}
+
 async function abrirDB() {
     if (db_instancia) return db_instancia;
     return new Promise((resolve, reject) => {

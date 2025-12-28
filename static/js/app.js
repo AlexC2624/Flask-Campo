@@ -63,54 +63,28 @@ async function sincronizar() {
 }
 
 async function salvarEntrada() {
-    // Captura dos elementos
     const talhao = document.getElementById('talhao').value;
     const atividade = document.getElementById('atividade').value;
     const quantidade = document.getElementById('quantidade').value;
     const dataHora = document.getElementById('dataHora').value;
-    const observacoes = document.getElementById('observacoes').value;
 
-    // --- VALIDAÇÃO DE CAMPOS OBRIGATÓRIOS ---
-    if (!quantidade || !dataHora) {
-        exibirStatus("❌ Preencha a Quantidade e a Data!", "status-erro");
-        // Efeito visual de erro no input
-        document.getElementById('quantidade').style.borderColor = "#dc3545";
-        return;
-    }
-
-    // Resetar estilo se estiver ok
-    document.getElementById('quantidade').style.borderColor = "#ddd";
-
-    // Criar objeto completo para o IndexedDB
     const novoRegistro = {
-        info: `Talhão: ${talhao} | Atividade: ${atividade} | Qtd: ${quantidade}`, // Resumo para o log
         detalhes: {
+            aparelho: obterIdAparelho(), // Identificador automático
             talhao,
             atividade,
             quantidade,
-            dataHora,
-            observacoes
-        },
-        data_criacao: new Date().toISOString()
+            dataHora
+        }
     };
     
     try {
         await salvarLocalmente(novoRegistro);
-        
-        // Limpar campos específicos após salvar
-        document.getElementById('quantidade').value = "";
-        document.getElementById('observacoes').value = "";
-        
-        exibirStatus("✅ Salvo com sucesso no aparelho!", "status-sucesso");
+        exibirStatus(`✅ Salvo! (ID: ${obterIdAparelho()})`, "status-sucesso");
         await atualizarContador();
-        
-        // Tenta sincronizar automaticamente se houver rede
-        if (navigator.onLine) {
-            sincronizar();
-        }
+        if (navigator.onLine) sincronizar();
     } catch (e) {
-        console.error("Erro ao salvar:", e);
-        exibirStatus("❌ Erro ao salvar localmente.", "status-erro");
+        exibirStatus("❌ Erro ao salvar", "status-erro");
     }
 }
 

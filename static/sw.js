@@ -1,47 +1,56 @@
-const CACHE_NAME = 'v5-coletor';
+const CACHE_NAME = 'v11-agro-cargnin';
 const ASSETS = [
     '/',
-    'menu',
-    'coleta',
-    '/manifest.json',
+    '/menu',
+    '/coleta',
+    '/relatorios',
+    '/ver_dados',
     '/static/css/style.css',
     '/static/js/db.js',
-    '/static/js/app.js'
+    '/static/js/app.js',
+    '/static/logo.png',
+    '/manifest.json'
 ];
 
-// Instalação e Cache
 self.addEventListener('install', (event) => {
-    self.skipWaiting(); 
+    self.skipWaiting();
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            console.log('SW: Cacheando todos os arquivos novos');
-            return cache.addAll(ASSETS);
-        })
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
     );
 });
 
-// Limpeza de caches antigos (Importante para atualizar o HTML)
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
+        caches.keys().then((keys) => {
             return Promise.all(
-                cacheNames.map((cache) => {
-                    if (cache !== CACHE_NAME) {
-                        console.log('SW: Removendo cache antigo:', cache);
-                        return caches.delete(cache);
-                    }
-                })
+                keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
             );
         })
     );
 });
 
-// Resposta: Tenta buscar na rede primeiro, se falhar, usa o cache
-// Isso é melhor para desenvolvimento (Network First)
 self.addEventListener('fetch', (event) => {
+    // Não cacheia downloads de Excel ou envios de POST
+    if (event.request.method !== 'GET' || event.request.url.includes('/exportar_excel')) {
+        return;
+    }
+
     event.respondWith(
-        fetch(event.request).catch(() => {
-            return caches.match(event.request);
+        caches.match(event.request).then((cachedResponse) => {
+            const fetchPromise = fetch(event.request).then((networkResponse) => {
+                // Atualiza o cache com a versão nova da rede
+                if (networkResponse.ok) {
+                    const clone = networkResponse.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+                }
+                return networkResponse;
+            });
+
+            // Retorna o cache se houver, ou a rede se não houver cache
+            return cachedResponse || fetchPromise;
+        }).catch(() => {
+            // Se tudo falhar (totalmente offline e sem cache)
+            return caches.match('/');
         })
     );
 });

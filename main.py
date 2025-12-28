@@ -13,7 +13,7 @@ configurar_rotas(app, db)
 
 if __name__ == '__main__':
     PORTA = 5000
-    TUNEL_ATIVO = False  # Defina como True para ativar o túnel Ngrok
+    TUNEL_ATIVO = True  # Defina como True para ativar o túnel Ngrok
     
     # Tenta iniciar o túnel Ngrok se ativado
     if TUNEL_ATIVO:

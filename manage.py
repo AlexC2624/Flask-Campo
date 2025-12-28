@@ -10,21 +10,22 @@ class Manage:
 
     def criar_tabela(self):
         conn = self.conectar()
+        # Adicionada a coluna 'dispositivo'
         conn.execute('''CREATE TABLE IF NOT EXISTS registros 
             (id INTEGER PRIMARY KEY AUTOINCREMENT, 
-             talhao TEXT, atividade TEXT, quantidade TEXT, data_hora TEXT, obs TEXT)''')
+            dispositivo TEXT, talhao TEXT, atividade TEXT, quantidade TEXT, data_hora TEXT, obs TEXT)''')
         conn.close()
 
     def inserir(self, d):
         try:
             conn = self.conectar()
-            conn.execute("INSERT INTO registros (talhao, atividade, quantidade, data_hora, obs) VALUES (?,?,?,?,?)",
-                         (d['talhao'], d['atividade'], d['quantidade'], d['dataHora'], d['observacoes']))
+            conn.execute("INSERT INTO registros (dispositivo, talhao, atividade, quantidade, data_hora, obs) VALUES (?,?,?,?,?,?)",
+                        (d['dispositivo'], d['talhao'], d['atividade'], d['quantidade'], d['dataHora'], d['observacoes']))
             conn.commit()
             conn.close()
             return True
         except Exception as e:
-            print(f"Erro no banco: {e}")
+            print(f"Erro: {e}")
             return False
 
     def ler(self):

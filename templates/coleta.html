@@ -3,94 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroGestão - Coleta de Campo</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>AgroGestão - Categorias</title>
+    <link rel="manifest" href="/static/manifest.json">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --agri: #4caf50;
+            --pecu: #795548;
+            --maq: #455a64;
+            --estq: #f57c00;
+            --bg: #eceff1;
+            --white: #ffffff;
+        }
+
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 15px; color: #333; }
+        
+        /* Status de Conexão */
+        .status-header {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--white); padding: 10px 15px; border-radius: 10px; margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .online-dot { background: #4caf50; }
+        .offline-dot { background: #f44336; }
+
+        .category-section { margin-bottom: 25px; }
+        .category-title { 
+            font-size: 18px; font-weight: bold; margin-bottom: 10px; 
+            display: flex; align-items: center; gap: 10px;
+            color: #444; border-bottom: 2px solid #ddd; padding-bottom: 5px;
+        }
+
+        .grid-forms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .form-card {
+            background: var(--white); padding: 15px; border-radius: 12px;
+            text-decoration: none; color: #333; text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+            display: flex; flex-direction: column; align-items: center;
+            transition: transform 0.1s; border-bottom: 4px solid #ddd;
+        }
+        .form-card:active { transform: scale(0.95); }
+
+        /* Cores por Categoria */
+        .border-agri { border-bottom-color: var(--agri); }
+        .border-pecu { border-bottom-color: var(--pecu); }
+        .border-maq { border-bottom-color: var(--maq); }
+        .border-estq { border-bottom-color: var(--estq); }
+
+        .icon { font-size: 28px; margin-bottom: 5px; }
+        .form-card span { font-size: 13px; font-weight: 600; }
+
+        .sync-footer {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--white); padding: 15px;
+            display: flex; justify-content: space-around;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        .btn-nav { text-decoration: none; font-weight: bold; color: var(--primary); font-size: 14px; }
+    </style>
 </head>
-<body class="coleta-body">
+<body>
 
-<div class="card agro-card">
-    <header class="coleta-header">
-        <div class="header-top">
-            <a href="/menu" style="text-decoration: none; color: var(--primary-color); margin-right: 15px;">
-                <i class="fas fa-chevron-left"></i>
-            </a>
-            <h2><i class="fas fa-tractor"></i> Registro de Campo</h2>
-            <span class="badge" id="status-conexao"><i class="fas fa-circle"></i> Online</span>
+    <div class="status-header">
+        <span><strong>AgroGestão</strong></span>
+        <div id="connection-status">
+            <span class="dot online-dot"></span><small id="status-text">Online</small>
         </div>
-        <p>Preencha os dados da atividade abaixo</p>
-    </header>
-
-    <form id="formRegistro" class="agro-form">
-        <div class="field">
-            <label><i class="fas fa-map-marker-alt"></i> Talhão / Lote:</label>
-            <select id="talhao">
-                <option value="T1">Talhão 01 - Soja</option>
-                <option value="T2">Talhão 02 - Milho</option>
-                <option value="P1">Pasto Norte - Nelore</option>
-            </select>
-        </div>
-
-        <div class="field">
-            <label><i class="fas fa-tasks"></i> Tipo de Atividade:</label>
-            <select id="atividade">
-                <option value="aplicacao">Aplicação de Insumo</option>
-                <option value="sanidade">Manejo Sanitário</option>
-                <option value="observacao">Observação de Pragas</option>
-            </select>
-        </div>
-
-        <div class="input-row">
-            <div class="field">
-                <label><i class="fas fa-weight-hanging"></i> Quantidade:</label>
-                <input type="number" id="quantidade" placeholder="Ex: 50.5" step="0.01">
-            </div>
-            <div class="field">
-                <label><i class="fas fa-calendar-alt"></i> Data/Hora:</label>
-                <input type="datetime-local" id="dataHora">
-            </div>
-        </div>
-
-        <div class="field">
-            <label><i class="fas fa-comment-alt"></i> Observações:</label>
-            <textarea id="observacoes" placeholder="Notas sobre clima, estado da cultura..."></textarea>
-        </div>
-
-        <button type="button" class="btn-save" onclick="salvarEntrada()">
-            <i class="fas fa-save"></i> SALVAR NO DISPOSITIVO
-        </button>
-    </form>
-    
-    <div class="sync-section">
-        <div class="contador-box">
-            <i class="fas fa-cloud-upload-alt"></i> 
-            <span>Pendentes: <strong id="cont-num">0</strong></span>
-        </div>
-        <button class="btn-sync" onclick="sincronizarDados()">
-            <i class="fas fa-sync-alt"></i> Sincronizar
-        </button>
     </div>
-    
-    <div id="status" class="status-msg"></div>
 
-    <div class="nav-footer">
-        <a href="/ver_dados" class="btn-link">Visualizar Banco</a>
-        <a href="/" class="btn-logout">Sair</a>
+    <div class="category-section">
+        <div class="category-title">🌿 Agricultura</div>
+        <div class="grid-forms">
+            <a href="/coleta/planta" class="form-card border-agri"><div class="icon">🌱</div><span>Plantaio</span></a>
+            <a href="/coleta/aplicacao" class="form-card border-agri"><div class="icon">🚜</div><span>Aplicação</span></a>
+            <a href="/coleta/colheita" class="form-card border-agri"><div class="icon">🌾</div><span>Colheita</span></a>
+            <a href="/coleta/pluviometro" class="form-card border-agri"><div class="icon">🌧️</div><span>Pluviômetro</span></a>
+            <a href="/coleta/manutencao-area" class="form-card border-agri"><div class="icon">🪵</div><span>Mato / Lavoura</span></a>
+            <a href="/coleta/mao-obra-agri" class="form-card border-agri"><div class="icon">👷</div><span>Mão de Obra</span></a>
+        </div>
     </div>
-</div>
 
-<script src="/static/js/db.js"></script>
-<script src="/static/js/app.js"></script>
-<script>
-    // Define a data atual por padrão no campo
-    document.getElementById('dataHora').value = new Date().toISOString().slice(0, 16);
+    <div class="category-section">
+        <div class="category-title">🐂 Pecuária</div>
+        <div class="grid-forms">
+            <a href="/coleta/animais-compra" class="form-card border-pecu"><div class="icon">💰</div><span>Compra</span></a>
+            <a href="/coleta/animais-venda" class="form-card border-pecu"><div class="icon">🚛</div><span>Venda</span></a>
+            <a href="/coleta/insumos-pecu" class="form-card border-pecu"><div class="icon">🧪</div><span>Insumos/Vacina</span></a>
+            <a href="/coleta/mao-obra-pecu" class="form-card border-pecu"><div class="icon">🤠</div><span>Mão de Obra</span></a>
+        </div>
+    </div>
 
-    // Registro do Service Worker
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js');
-    }
-</script>
+    <div class="category-section">
+        <div class="category-title">⚙️ Frota e Máquinas</div>
+        <div class="grid-forms">
+            <a href="/coleta/abastecimento" class="form-card border-maq"><div class="icon">⛽</div><span>Abastecimento</span></a>
+            <a href="/coleta/manutencao-maq" class="form-card border-maq"><div class="icon">🛠️</div><span>Manutenção</span></a>
+            <a href="/coleta/horas-maquina" class="form-card border-maq"><div class="icon">⏱️</div><span>Horas/KM</span></a>
+        </div>
+    </div>
 
+    <div class="category-section">
+        <div class="category-title">📦 Almoxarifado / Estoque</div>
+        <div class="grid-forms">
+            <a href="/coleta/estoque-diesel" class="form-card border-estq"><div class="icon">🛢️</div><span>Diesel / Óleo</span></a>
+            <a href="/coleta/estoque-insumos" class="form-card border-estq"><div class="icon">💊</div><span>Filtros/Peças</span></a>
+            <a href="/coleta/estoque-sementes" class="form-card border-estq"><div class="icon">🎒</div><span>Sementes/Adubo</span></a>
+            <a href="/coleta/chaves" class="form-card border-estq"><div class="icon">🔑</div><span>Chaves/Ferramentas</span></a>
+        </div>
+    </div>
+
+    <div style="height: 80px;"></div> <footer class="sync-footer">
+        <a href="/" class="btn-nav">🏠 Menu</a>
+        <a href="/ver_dados" class="btn-nav">📊 Banco</a>
+        <span id="pendentes-badge" style="background: red; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; display: none;">0</span>
+    </footer>
+
+    <script>
+        // Detector de Conexão
+        function checkConnection() {
+            const dot = document.querySelector('.dot');
+            const text = document.getElementById('status-text');
+            if (navigator.onLine) {
+                dot.className = "dot online-dot";
+                text.innerText = "Online";
+            } else {
+                dot.className = "dot offline-dot";
+                text.innerText = "Offline (Campo)";
+            }
+        }
+        window.addEventListener('online', checkConnection);
+        window.addEventListener('offline', checkConnection);
+        checkConnection();
+
+        // Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
 </body>
 </html>

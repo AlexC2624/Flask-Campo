@@ -5,11 +5,7 @@ from io import BytesIO
 def configurar_rotas(app, db):
     @app.route('/')
     def index():
-        return render_template('menu.html')
-
-    @app.route('/menu')
-    def menu():
-        return render_template('menu.html')
+        return render_template('index.html')
 
     @app.route('/coleta')
     def coleta():

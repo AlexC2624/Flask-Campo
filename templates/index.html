@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroGestão - Painel</title>
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <meta name="theme-color" content="#2e7d32">
+    
+    <style>
+        /* CSS INTERNO PARA FUNCIONAMENTO PWA TOTAL */
+        :root {
+            --primary: #2e7d32;
+            --secondary: #1b5e20;
+            --accent: #ff9800; /* Cor para Sincronização */
+            --bg: #f4f4f4;
+            --text: #333;
+            --white: #ffffff;
+            --danger: #d32f2f;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg); 
+            margin: 0; 
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+        }
+
+        .menu-header { text-align: center; margin-bottom: 30px; }
+        .menu-logo { max-width: 120px; margin-bottom: 10px; }
+        h1 { margin: 5px 0; color: var(--primary); font-size: 24px; }
+
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        .menu-card {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text);
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .menu-card:active { transform: scale(0.95); }
+        
+        /* Destaque do Botão Sincronizar */
+        .sync-card { 
+            grid-column: span 2; 
+            background: var(--accent); 
+            color: white; 
+            border: 2px solid #e68a00;
+        }
+        .sync-card p { color: #fff8e1; font-size: 12px; }
+
+        .icon-box { font-size: 30px; margin-bottom: 8px; }
+        h3 { margin: 5px 0; font-size: 16px; }
+        p { margin: 0; font-size: 13px; color: #666; }
+
+        .menu-footer { margin-top: 30px; text-align: center; }
+        .btn-exit {
+            display: inline-block;
+            padding: 10px 20px;
+            color: var(--danger);
+            text-decoration: none;
+            font-weight: bold;
+            border: 1px solid var(--danger);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="menu-body">
+
+<div class="menu-container">
+    <div id="status-indicator" class="status-bar online">
+        <span id="status-text">🟢 Conectado ao servidor da sede</span>
+    </div>
+
+    <header class="menu-header">
+        <img src="/static/logo.png" alt="Logo" class="menu-logo">
+        <h1>AgroGestão</h1>
+        <p>Painel de Controle</p>
+    </header>
+
+    <div class="menu-grid">
+        <a href="/coleta" class="menu-card">
+            <div class="icon-box">📝</div>
+            <h3>Coleta de Dados</h3>
+            <p>Registrar atividades</p>
+        </a>
+
+        <a href="/ver_dados" class="menu-card">
+            <div class="icon-box">📊</div>
+            <h3>Ver Banco</h3>
+            <p>Consultar registros</p>
+        </a>
+        
+        <a href="/relatorios" class="menu-card">
+            <div class="icon-box">📋</div>
+            <h3>Relatórios</h3>
+            <p>Exportar PDF/Excel</p>
+        </a>
+    </div>
+    
+    <a href="/sincronizar" id="sync-btn" class="menu-card sync-card">
+        <div class="icon-box">🔄</div>
+        <h3>Sincronizar Dados</h3>
+        <p>(Requer Internet)</p>
+    </a>
+
+    <footer class="menu-footer">
+        <p>Copyright 2025</p>
+    </footer>
+</div>
+
+
+
+<script>
+    // Gerenciar Status Online/Offline
+    function updateStatus() {
+        const indicator = document.getElementById('status-indicator');
+        const statusText = document.getElementById('status-text');
+        const syncBtn = document.getElementById('sync-btn');
+
+        if (navigator.onLine) {
+            indicator.className = "status-bar online";
+            statusText.innerText = "🟢 Conectado ao servidor da sede";
+            syncBtn.style.opacity = "1";
+            syncBtn.style.pointerEvents = "auto";
+        } else {
+            indicator.className = "status-bar offline";
+            statusText.innerText = "🔴 Modo Offline (Campo)";
+            syncBtn.style.opacity = "0.6";
+            // Opcional: desabilitar clique no sincronizar se estiver offline
+            syncBtn.style.pointerEvents = "none"; 
+        }
+    }
+
+    window.addEventListener('online', updateStatus);
+    window.addEventListener('offline', updateStatus);
+    updateStatus(); // Executa ao carregar
+
+    // Registro do Service Worker
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('PWA ativo:', reg.scope))
+            .catch(err => console.error('Erro PWA:', err));
+        });
+    }
+</script>
+</body>
+</html>

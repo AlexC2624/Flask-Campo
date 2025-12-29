@@ -6,15 +6,17 @@
     <title>AgroGestão - Menu</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="manifest" href="/manifest.json">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="menu-body">
 
 <div class="menu-container">
+    <div id="status-indicator" class="status-bar online">
+        <span id="status-text">🟢 Conectado ao servidor da sede</span>
+    </div>
     <header class="menu-header">
         <img src="/static/logo.png" alt="Logo" class="menu-logo">
         <h1>Painel de Controle</h1>
-        <p>Olá, <strong>Admin</strong>. O que deseja fazer?</p>
+        <p>O que deseja fazer?</p>
     </header>
 
     <div class="menu-grid">
@@ -51,6 +53,25 @@
 <script>
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js');
+    }
+    // Gerenciar Status Online/Offline
+    function updateStatus() {
+        const indicator = document.getElementById('status-indicator');
+        const statusText = document.getElementById('status-text');
+        const syncBtn = document.getElementById('sync-btn');
+
+        if (navigator.onLine) {
+            indicator.className = "status-bar online";
+            statusText.innerText = "🟢 Conectado ao servidor da sede";
+            syncBtn.style.opacity = "1";
+            syncBtn.style.pointerEvents = "auto";
+        } else {
+            indicator.className = "status-bar offline";
+            statusText.innerText = "🔴 Modo Offline (Campo)";
+            syncBtn.style.opacity = "0.6";
+            // Opcional: desabilitar clique no sincronizar se estiver offline
+            syncBtn.style.pointerEvents = "none"; 
+        }
     }
 </script>
 </body>

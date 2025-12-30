@@ -1,4 +1,4 @@
-const CACHE_NAME = 'v16-agro-cargnin';
+const CACHE_NAME = 'v18-agro-cargnin';
 const ASSETS = [
     '/',
     '/coleta',

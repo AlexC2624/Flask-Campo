@@ -9,7 +9,8 @@ configurar_rotas(app, db)
 
 if __name__ == '__main__':
     PORTA = 5000
-    USAR_TUNEL_NGROK = True
+    DEBUG = True
+    USAR_TUNEL_NGROK = False
     USAR_TUNEL_CLOUDFLARE = False
 
     # Instancia a classe do tunel
@@ -24,7 +25,7 @@ if __name__ == '__main__':
         tunel.iniciar()
     
     try:
-        app.run(host='0.0.0.0', port=PORTA, debug=False)
+        app.run(host='0.0.0.0', port=PORTA, debug=DEBUG)
     except KeyboardInterrupt:
         print("\nSaindo do programa...")
     finally:

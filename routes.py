@@ -3,6 +3,8 @@ import pandas as pd
 from io import BytesIO
 
 def configurar_rotas(app, db):
+    @app.route('/favicon.ico')
+    def favicon(): return send_from_directory('static', 'favicon.ico')
     @app.route('/')
     def index():
         return render_template('index.html')
